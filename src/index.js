@@ -1,21 +1,10 @@
 import VanillaTilt from "vanilla-tilt";
-
+/* Programa con XMLrequest */
 // function httpGet(url) {
 //   const xmlHttp = new XMLHttpRequest();
 //   xmlHttp.open("GET", url, false);
 //   xmlHttp.send(null);
 //   return xmlHttp.responseText;
-// }
-
-// function fetchRequest(url) {
-//   const request = fetch(url);
-//   request.then((response) => {
-//     jsonAPIContent = response.json();
-//   });
-
-//   request.catch((err) => {
-//     console.error("ERROR: ", err.menssage);
-//   });
 // }
 
 // const pokeNumber = 20; /* 1126 total */
@@ -46,54 +35,61 @@ import VanillaTilt from "vanilla-tilt";
 //   });
 // }
 
-const pokeNumber = 1126;
+/* Programa usando el fetch */
+function createDivs() {
+  for (let i = 0; i < pokeNumber; i++) {
+    const div = document.createElement("div");
+    div.classList.add("div-container");
+    main.appendChild(div);
+  }
+}
+
+function createContentTags() {
+  for (let i = 0; i < pokeNumber; i++) {
+    const img = document.createElement("img");
+    img.classList.add("imagen");
+    const p = document.createElement("p");
+    p.classList.add("parrafo");
+    divSelector[i].appendChild(p);
+    divSelector[i].appendChild(img);
+  }
+}
+
+function createPokemon(data, index) {
+  const imgArray = document.querySelectorAll(".imagen");
+  const pArray = document.querySelectorAll(".parrafo");
+  imgArray[index].src = data.sprites.front_default;
+  pArray[index].textContent = data.name;
+}
+
+const pokeNumber = 151;
 const url = `https://pokeapi.co/api/v2/pokemon/?limit=${pokeNumber}`;
 const main = document.querySelector(".main-container");
 
-for (let i = 0; i < pokeNumber; i++) {
-  const div = document.createElement("div");
-  div.classList.add("div-container");
-  // div.classList.add(`${i}`);
-  main.appendChild(div);
-}
+createDivs();
 
 const divSelector = document.querySelectorAll(".div-container");
 
-for (let i = 0; i < pokeNumber; i++) {
-  const img = document.createElement("img");
-  img.classList.add("imagen");
-  const p = document.createElement("p");
-  p.classList.add("parrafo");
-  divSelector[i].appendChild(p);
-  divSelector[i].appendChild(img);
-}
+createContentTags();
 
-fetch(url)
+fetch(url) // Para obtener las URLs de los datos de cada pokemon
   .then(response => {
     if (response.ok) {
       return response.json();
     } else console.log("Error en la peticion");
   })
   .then(data => {
-    console.log(data);
     for (let i = 0; i < pokeNumber; i++) {
       const pokemon = data.results[i].url;
-      fetch(pokemon)
+      fetch(pokemon) // Para obtener los datos de cada pokemon atraves de su URL
         .then(response => {
           if (response.ok) {
             return response.json();
           } else console.log("Error en la peticion");
         })
         .then(data => {
-          // console.log(data);
-          const imgArray = document.querySelectorAll(".imagen");
-          const pArray = document.querySelectorAll(".parrafo");
-          imgArray[i].src = data.sprites.front_default;
-          pArray[i].textContent = data.name;
-          VanillaTilt.init(divSelector[i], {
-            max: 50,
-            speed: 400
-          });
+          createPokemon(data, i);
+          VanillaTilt.init(document.querySelectorAll(".div-container"));
         });
     }
   });
