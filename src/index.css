@@ -1,0 +1,17 @@
+.main-container {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.imagen {
+  width: 100px;
+  height: 100px;
+}
+
+.div-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
